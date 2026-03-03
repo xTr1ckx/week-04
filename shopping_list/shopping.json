@@ -1,13 +1,23 @@
 [
   {
     "name": "Maize",
-    "qty": 3,
+    "qty": 2,
     "price": 1.2
   },
   {
-    "name": "Piens",
+    "name": "Maize",
     "qty": 2,
-    "price": 1.5
+    "price": 1.35
+  },
+  {
+    "name": "Avokado",
+    "qty": 4,
+    "price": 1.8
+  },
+  {
+    "name": "Piens",
+    "qty": 1,
+    "price": 1.8
   },
   {
     "name": "Olas",
