@@ -1,18 +1,22 @@
 [
   {
     "name": "Maize",
+    "qty": 3,
     "price": 1.2
   },
   {
     "name": "Piens",
+    "qty": 2,
     "price": 1.5
   },
   {
     "name": "Olas",
+    "qty": 1,
     "price": 2.0
   },
   {
     "name": "Čipsi",
+    "qty": 2,
     "price": 1.7
   }
 ]

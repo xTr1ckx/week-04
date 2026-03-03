@@ -1,19 +1,36 @@
 import sys
 from storage import load_list, save_list
+from utils import calc_line_total, calc_grand_total, count_units
 
-def add_item(name, price):
+def add_item(name, qty, price):
     items = load_list()
 
     try:
+        qty = int(qty)
+        if qty <= 0:
+            print("Daudzumam jābūt pozitīvam skaitlim!")
+            return
+    except ValueError:
+        print("Daudzumam jābūt veselam skaitlim!")
+        return
+    
+    try:
         price = float(price)
+        if price < 0:
+            print("Cena nedrīkst būt negatīva!")
+            return
     except ValueError:
         print("Cenai ir jābūt skaitlim!")
         return
     
-    items.append({"name": name, "price": price})
+    item = {"name": name, "qty": qty, "price": price}
+
+    items.append(item)
     save_list(items)
 
-    print(f"✓ Pievienots: {name} ({price:.2f} EUR)")
+    line_total = calc_line_total(item)
+
+    print(f"✓ Pievienots: {name} x {qty} ({price:.2f} EUR/gab.) = {line_total:.2f} EUR")
 
 def list_items():
     items = load_list()
@@ -23,16 +40,29 @@ def list_items():
         return
     
     print("Iepirkumu saraksts:")
+
     for index, item in enumerate(items, start=1):
-        print(f"{index}. {item["name"]} - {item["price"]:.2f} EUR")
+        line_total = calc_line_total(item)
+        print(f"{index}. {item["name"]} x {item["qty"]} - "
+              f"{item["price"]:.2f} EUR/gab. - {line_total:.2f} EUR")
 
 def calculate_total():
     items = load_list()
 
-    total = sum(item["price"] for item in items)
-    count = len(items)
+    if not items:
+        print("Saraksts ir tukšs.")
+        return
+    
+    grand_total = calc_grand_total(items)
+    product_count = len(items)
+    unit_count = count_units(items)
 
-    print(f"Kopā: {total:.2f} EUR ({count} produkti)")
+    #total = sum(item["price"] for item in items)
+    #count = len(items)
+
+    #print(f"Kopā: {total:.2f} EUR ({count} produkti)")
+
+    print(f"Kopā: {grand_total:.2f} EUR ({unit_count} vienības, {product_count} produkti.)")
 
 def clear_list():
     save_list([])
@@ -41,7 +71,7 @@ def clear_list():
 def main():
     if len(sys.argv) < 2:
         print("Lietošana:")
-        print("python shop.py add Nosaukums Cena")
+        print("python shop.py add Nosaukums Daudzums Cena")
         print("python shop.py list")
         print("python shop.py total")
         print("python shop.py clear")
@@ -50,10 +80,10 @@ def main():
     command = sys.argv[1]
 
     if command == "add":
-        if len(sys.argv) != 4:
-            print("Nepareizs argumentu skaits komandai add.")
+        if len(sys.argv) != 5:
+            print("Nepareizs argumentu skaits komandai add (python shop.py add Nosaukums Daudzums Cena).")
             return
-        add_item(sys.argv[2], sys.argv[3])
+        add_item(sys.argv[2], sys.argv[3], sys.argv[4])
 
     elif command == "list":
         list_items()
